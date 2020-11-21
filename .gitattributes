@@ -1,0 +1,12 @@
+.gitattributes export-ignore
+.gitignore export-ignore
+config-overrides.js export-ignore
+docker-compose.yml export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+README.md export-ignore
+/build/asset-manifest.json export-ignore
+/build/index.html export-ignore
+/public export-ignore
+/scripts export-ignore
+/src export-ignore
