@@ -24,7 +24,7 @@ class PluginAndThemeUpdateProxyBase {
 	protected static $instance;
 
 	public static function getVersion() {
-		return '1.00';
+		return '1.01';
 	}
 
 	public static function getTextDomain() {
@@ -155,6 +155,11 @@ class PluginAndThemeUpdateProxyBase {
 	}
 
 	protected function pushUpdate($source, $value, $type, $checked, $errorMessages) {
+		$headers = $this->recursionCheck( $source );
+		if ( $headers === null ) {
+			return;
+		}
+
 		$body = array_intersect_key( $checked, array_flip( $type === 'plugin' ? $source->selectedPlugins : $source->selectedThemes ) );
 		if ( count( $body ) === 0 ) {
 			$body = '{}';
@@ -165,10 +170,7 @@ class PluginAndThemeUpdateProxyBase {
 		$result = wp_remote_post( add_query_arg( 'type', $type, $source->updateURL ), array(
 			'httpversion' => '1.1',
 			'user-agent' => self::getUserAgent(),
-			'headers' => array(
-				'Content-Type' => 'application/json',
-				'X-PTUP-Authentication-Token' => $source->authenticationToken
-			),
+			'headers' => $headers,
 			'sslverify' => !$source->skipSSLCertificateChecks,
 			'body' => $body
 		) );
@@ -720,13 +722,15 @@ class PluginAndThemeUpdateProxyBase {
 	}
 
 	protected function fetchDetails($source, $type, $errorMessages) {
+		$headers = $this->recursionCheck( $source );
+		if ( $headers === null ) {
+			return;
+		}
+
 		$result = wp_remote_get( add_query_arg( 'type', $type, $source->updateURL ), array(
 			'httpversion' => '1.1',
 			'user-agent' => self::getUserAgent(),
-			'headers' => array(
-				'Content-Type' => 'application/json',
-				'X-PTUP-Authentication-Token' => $source->authenticationToken
-			),
+			'headers' => $headers,
 			'sslverify' => !$source->skipSSLCertificateChecks,
 		) );
 
@@ -824,6 +828,27 @@ class PluginAndThemeUpdateProxyBase {
 		}
 
 		exit;
+	}
+
+	protected function recursionCheck($source) {
+		$recursionCheck = null;
+
+		if ( isset( $_SERVER['HTTP_X_PTUP_RECURSION_CHECK'] ) ) {
+			$recursionCheck = array_map( 'trim', explode( ',', $_SERVER['HTTP_X_PTUP_RECURSION_CHECK'] ) );
+			if ( in_array( $source->authenticationToken, $recursionCheck ) ) {
+				return null;
+			}
+		} else {
+			$recursionCheck = array();
+		}
+
+		$recursionCheck[] = $source->authenticationToken;
+
+		return array(
+			'Content-Type' => 'application/json',
+			'X-PTUP-Authentication-Token' => $source->authenticationToken,
+			'X-PTUP-Recursion-Check' => join( ',', $recursionCheck )
+		);
 	}
 }
 

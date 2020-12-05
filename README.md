@@ -82,5 +82,8 @@ Please install and use the [GitHub Updater plugin](https://github.com/afragen/gi
 
 ## Changelog
 
+### 1.01
+* Prevent infinite recursion when propagating update checks to other Hosting URLs.
+
 ### 1.00
 * The initial release.
