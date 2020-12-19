@@ -1,6 +1,6 @@
 {
   "name": "plugin-and-theme-update-proxy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "scripts": {
     "start:docker": "docker-compose up",

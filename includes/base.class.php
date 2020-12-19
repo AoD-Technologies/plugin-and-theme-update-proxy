@@ -24,7 +24,7 @@ class PluginAndThemeUpdateProxyBase {
 	protected static $instance;
 
 	public static function getVersion() {
-		return '1.02';
+		return '1.03';
 	}
 
 	public static function getTextDomain() {
@@ -517,9 +517,9 @@ class PluginAndThemeUpdateProxyBase {
 							$path = $sourceDir . DIRECTORY_SEPARATOR . $baseName;
 							$files = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( $path ), \RecursiveIteratorIterator::LEAVES_ONLY );
 
-							foreach ( $files as $name => $file ) {
-								if ( !$file->isDir() ) {
-									$filePath = $file->getRealPath();
+							foreach ( $files as $name => $fileObject ) {
+								if ( !$fileObject->isDir() ) {
+									$filePath = $fileObject->getRealPath();
 									$relativePath = substr( $filePath, strlen( $sourceDir ) + 1 );
 									$zip->addFile( $filePath, $relativePath );
 								}
