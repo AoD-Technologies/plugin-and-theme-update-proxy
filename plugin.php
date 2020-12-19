@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Plugin and Theme Update Proxy
  * Description: Allows you to specify other WordPress installations as the source of some or all plugin and theme updates.
- * Version:     1.01
+ * Version:     1.02
  * Author:      AoD Technologies LLC
  * Author URI:  https://aod-tech.com/
  * License:     GPL3

@@ -82,6 +82,10 @@ Please install and use the [GitHub Updater plugin](https://github.com/afragen/gi
 
 ## Changelog
 
+### 1.02
+* Do not check for updates when no plugins or themes are installed or selected to be checked.
+* Avoid several PHP warnings.
+
 ### 1.01
 * Prevent infinite recursion when propagating update checks to other Hosting URLs.
 

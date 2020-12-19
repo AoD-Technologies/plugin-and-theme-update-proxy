@@ -24,7 +24,7 @@ class PluginAndThemeUpdateProxyBase {
 	protected static $instance;
 
 	public static function getVersion() {
-		return '1.01';
+		return '1.02';
 	}
 
 	public static function getTextDomain() {
@@ -155,16 +155,23 @@ class PluginAndThemeUpdateProxyBase {
 	}
 
 	protected function pushUpdate($source, $value, $type, $checked, $errorMessages) {
-		$headers = $this->recursionCheck( $source );
-		if ( $headers === null ) {
+		if ( count( $checked ) === 0 ) {
 			return;
 		}
 
-		$body = array_intersect_key( $checked, array_flip( $type === 'plugin' ? $source->selectedPlugins : $source->selectedThemes ) );
+		$data = $type === 'plugin' ? $source->selectedPlugins : $source->selectedThemes;
+		if ( $data === null || count( $data ) === 0 ) {
+			return;
+		}
+
+		$body = array_intersect_key( $checked, array_flip( $data ) );
 		if ( count( $body ) === 0 ) {
-			$body = '{}';
-		} else {
-			$body = json_encode( $body );
+			return;
+		}
+
+		$headers = $this->recursionCheck( $source );
+		if ( $headers === null ) {
+			return;
 		}
 
 		$result = wp_remote_post( add_query_arg( 'type', $type, $source->updateURL ), array(
@@ -172,7 +179,7 @@ class PluginAndThemeUpdateProxyBase {
 			'user-agent' => self::getUserAgent(),
 			'headers' => $headers,
 			'sslverify' => !$source->skipSSLCertificateChecks,
-			'body' => $body
+			'body' => json_encode( $body )
 		) );
 
 		if ( is_wp_error( $result ) ) {
