@@ -24,7 +24,7 @@ class PluginAndThemeUpdateProxyBase {
 	protected static $instance;
 
 	public static function getVersion() {
-		return '1.03';
+		return '1.04';
 	}
 
 	public static function getTextDomain() {
@@ -449,6 +449,7 @@ class PluginAndThemeUpdateProxyBase {
 						if ( $version !== $data->new_version ) {
 							$version = addslashes( $data->new_version );
 
+							$baseName = basename( explode( '/', $file )[0], '.php' );
 							$tmpFile = download_url( $data->package );
 
 							if ( is_wp_error( $tmpFile ) ) {
@@ -462,7 +463,7 @@ class PluginAndThemeUpdateProxyBase {
 							unlink( $tmpFile );
 
 							Common::createDirectoryIfNeeded( $updatePackageFileName );
-							Common::createDownloadableFile( $updatePackageFileName, $tmpFileSize, $zipFileName, $contentMD5, $tmpFileContents );
+							Common::createDownloadableFile( $updatePackageFileName, $tmpFileSize, "{$baseName}.{$data->new_version}.zip", $contentMD5, $tmpFileContents );
 							Common::createDownloadableFileVersionCache( $updatePackageVersionFileName, $version );
 						}
 
@@ -545,7 +546,7 @@ class PluginAndThemeUpdateProxyBase {
 					$result[$subkey][$file]->plugin = $file;
 					$result[$subkey][$file]->name = $data['Name'];
 					$result[$subkey][$file]->new_version = $data['Version'];
-					$result[$subkey][$file]->url = isset( $data["{ucfirst($type)}URI"] ) ? $data["{ucfirst($type)}URI"] : isset( $data['AuthorURI'] ) ? $data['AuthorURI'] : '';
+					$result[$subkey][$file]->url = isset( $data["{ucfirst($type)}URI"] ) ? $data["{ucfirst($type)}URI"] : ( isset( $data['AuthorURI'] ) ? $data['AuthorURI'] : '' );
 					$result[$subkey][$file]->package = admin_url( 'admin-ajax.php' ) . '?' . http_build_query( array(
 						'action' => 'ptup_download_package',
 						'package' => $file,

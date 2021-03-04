@@ -17,7 +17,7 @@ class Common {
     }
 
     public static function removeDirectory( $file ) {
-        if ( ! is_dir( $file ) ) {
+        if ( !is_dir( $file ) ) {
             @unlink( $file );
             return;
         }

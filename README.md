@@ -4,7 +4,7 @@
 * Donate link: https://aod-tech.com/donate/
 * Tags: plugin, theme, update, updater, custom plugin, custom theme, premium plugin, premium theme, paid plugin, paid theme
 * Requires at least: 3.5
-* Tested up to: 5.6
+* Tested up to: 5.6.2
 * Requires PHP: 5.6
 * Stable tag: master
 * License: GPLv3 or later
@@ -81,6 +81,10 @@ Please install and use the [GitHub Updater plugin](https://github.com/afragen/gi
 2. The Plugin and Theme Update Proxy Sources interface.
 
 ## Changelog
+
+### 1.04
+* Fix downloads proxied directly from upstream (i.e. downloads for plugins and themes which the Hosting site has not yet updated.)
+* Fix PHP 8 compatibility.
 
 ### 1.03
 * Avoid several PHP warnings.
