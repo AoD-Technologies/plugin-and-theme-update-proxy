@@ -24,7 +24,7 @@ class PluginAndThemeUpdateProxyBase {
 	protected static $instance;
 
 	public static function getVersion() {
-		return '1.04';
+		return '1.05';
 	}
 
 	public static function getTextDomain() {
@@ -62,19 +62,19 @@ class PluginAndThemeUpdateProxyBase {
 		$this->authenticationTokensOptionName = "{$this->underscoreTextDomain}_authentication_tokens";
 		$this->sourceOptionName = "{$this->underscoreTextDomain}_source";
 
-		add_action( 'init', array( $this, 'actionsAndFilters' ), $actionsAndFiltersPriority );
+		add_action( 'plugins_loaded', array( $this, 'actionsAndFilters' ), $actionsAndFiltersPriority );
 	}
 
 	public function actionsAndFilters() {
+		add_filter( 'http_request_args', array( $this, 'detectPluginUpdaterRequest' ), 1337, 2 );
+		add_filter( 'http_request_args', array( $this, 'detectThemeUpdaterRequest' ), 1337, 2 );
+
+		add_filter( 'auto_update_plugin', array( $this, 'allowAutoUpdates' ), 1337, 2 );
+		add_filter( 'auto_update_theme', array( $this, 'allowAutoUpdates' ), 1337, 2 );
+
+		add_action( 'requests-requests.before_request', array( $this, 'addAuthenticationTokenToDownloadPackageRequest' ), 1337, 2 );
+
 		if ( is_admin() ) {
-			add_filter( 'http_request_args', array( $this, 'detectPluginUpdaterRequest' ), 1337, 2 );
-			add_filter( 'http_request_args', array( $this, 'detectThemeUpdaterRequest' ), 1337, 2 );
-
-			add_filter( 'auto_update_plugin', array( $this, 'allowAutoUpdates' ), 1337, 2 );
-			add_filter( 'auto_update_theme', array( $this, 'allowAutoUpdates' ), 1337, 2 );
-
-			add_action( 'requests-requests.before_request', array( $this, 'addAuthenticationTokenToDownloadPackageRequest' ), 1337, 2 );
-
 			add_action( 'admin_menu', array( $this, 'addOptionsPage' ) );
 
 			add_action( 'admin_notices', array( $this, 'renderAdminNotices' ) );
@@ -277,6 +277,7 @@ class PluginAndThemeUpdateProxyBase {
 	public function pushPluginUpdates($value) {
 		$result = $this->pushUpdates($value, 'plugin');
 
+		add_filter( 'http_request_args', array( $this, 'detectPluginUpdaterRequest' ), 1337, 2 );
 		remove_filter( 'pre_set_site_transient_update_plugins', array( $this, 'pushPluginUpdates' ), 1337 );
 
 		return $result;
@@ -285,6 +286,7 @@ class PluginAndThemeUpdateProxyBase {
 	public function pushThemeUpdates($value) {
 		$result = $this->pushUpdates($value, 'theme');
 
+		add_filter( 'http_request_args', array( $this, 'detectThemeUpdaterRequest' ), 1337, 2 );
 		remove_filter( 'pre_set_site_transient_update_themes', array( $this, 'pushThemeUpdates' ), 1337 );
 
 		return $result;
