@@ -24,7 +24,7 @@ class PluginAndThemeUpdateProxyBase {
 	protected static $instance;
 
 	public static function getVersion() {
-		return '1.05';
+		return '1.06';
 	}
 
 	public static function getTextDomain() {
@@ -448,7 +448,7 @@ class PluginAndThemeUpdateProxyBase {
 
 						$version = false;
 						include ( $updatePackageVersionFileName );
-						if ( $version !== $data->new_version ) {
+						if ( version_compare( $version, $data->new_version, '<' ) ) {
 							$version = addslashes( $data->new_version );
 
 							$baseName = basename( explode( '/', $file )[0], '.php' );
@@ -488,7 +488,7 @@ class PluginAndThemeUpdateProxyBase {
 				}
 			}
 
-			$current = array_intersect_key( $all, array_diff_key( $checked, $result ) );
+			$current = array_intersect_key( $all, array_diff_key( $checked, array_merge( $result['no_update'], $result['response'] ) ) );
 
 			if ( count( $current ) > 0 ) {
 				foreach ( $current as $file => $data ) {
@@ -499,7 +499,7 @@ class PluginAndThemeUpdateProxyBase {
 
 					$version = false;
 					include ( $updatePackageVersionFileName );
-					if ( $version !== $data['Version'] ) {
+					if ( version_compare( $version, $data['Version'], '<' ) ) {
 						$version = addslashes( $data['Version'] );
 
 						$zipFileName = "{$baseName}.{$data['Version']}.zip";
@@ -551,8 +551,8 @@ class PluginAndThemeUpdateProxyBase {
 					$result[$subkey][$file]->url = isset( $data["{ucfirst($type)}URI"] ) ? $data["{ucfirst($type)}URI"] : ( isset( $data['AuthorURI'] ) ? $data['AuthorURI'] : '' );
 					$result[$subkey][$file]->package = admin_url( 'admin-ajax.php' ) . '?' . http_build_query( array(
 						'action' => 'ptup_download_package',
-						'package' => $file,
 						'type' => $type,
+						'package' => $file,
 						'x_ptup_authentication_token' => $authenticationToken // Note: This will be converted to a header when the download request is sent
 					), null, ini_get( 'arg_separator.output' ), PHP_QUERY_RFC3986 );
 				}
