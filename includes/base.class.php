@@ -24,7 +24,7 @@ class PluginAndThemeUpdateProxyBase {
 	protected static $instance;
 
 	public static function getVersion() {
-		return '1.06';
+		return '1.07';
 	}
 
 	public static function getTextDomain() {
@@ -66,6 +66,8 @@ class PluginAndThemeUpdateProxyBase {
 	}
 
 	public function actionsAndFilters() {
+		add_action( 'init', array( $this, 'maybeRunMigrations' ) );
+
 		add_filter( 'http_request_args', array( $this, 'detectPluginUpdaterRequest' ), 1337, 2 );
 		add_filter( 'http_request_args', array( $this, 'detectThemeUpdaterRequest' ), 1337, 2 );
 
@@ -89,6 +91,33 @@ class PluginAndThemeUpdateProxyBase {
 
 			add_action( 'wp_ajax_ptup_download_package', array( $this, 'ajaxDownloadPackageEndpoint' ) );
 			add_action( 'wp_ajax_nopriv_ptup_download_package', array( $this, 'ajaxDownloadPackageEndpoint' ) );
+		}
+	}
+
+	public function maybeRunMigrations() {
+		$storedVersion = get_option( "{$this->underscoreTextDomain}_version", '0' );
+
+		// Migration code for already active plugins
+		if ( version_compare( $storedVersion, self::getVersion(), '<' ) ) {
+			$this->runMigrations( $storedVersion );
+
+			update_option( "{$this->underscoreTextDomain}_version", self::getVersion() );
+		}
+	}
+
+	protected function runMigrations($storedVersion) {
+		switch ( $storedVersion ) {
+			case '0':
+				$this->loadSource();
+				if ( $this->source !== null ) {
+					$this->source->selectedThemes = [];
+					$this->saveSource( json_encode( $this->source ) );
+				}
+			// All intermediate versions until the next upgrade go here
+			case '1.07':
+				// The next upgrade code goes here
+			default:
+				break;
 		}
 	}
 

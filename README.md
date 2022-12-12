@@ -82,6 +82,9 @@ Please install and use the [GitHub Updater plugin](https://github.com/afragen/gi
 
 ## Changelog
 
+### 1.07
+* Avoid PHP warnings regarding undefined stdClass properties.
+
 ### 1.06
 * Fix another issue with downloads proxied directly from upstream (i.e. downloads for plugins and themes which the Hosting site has not yet updated.)
 

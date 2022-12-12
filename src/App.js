@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { styled } from '@mui/material/styles'
 
 import AppBar from '@aodtechnologies/plugin-and-theme-update-proxy-components/lib/components/AppBar'
 import SnackBar from '@aodtechnologies/plugin-and-theme-update-proxy-components/lib/components/SnackBar'
@@ -11,35 +11,30 @@ import { VisibleTabProvider } from '@aodtechnologies/plugin-and-theme-update-pro
 import { WordPressPluginsProvider } from '@aodtechnologies/plugin-and-theme-update-proxy-components/lib/providers/WordPressPlugins'
 import { WordPressThemesProvider } from '@aodtechnologies/plugin-and-theme-update-proxy-components/lib/providers/WordPressThemes'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    border: '1px solid #ddd',
-    minHeight: 200,
-    backgroundColor: theme.palette.background.paper
-  }
-}))
+const Div = styled('div')``
 
-const App = () => {
-  const classes = useStyles()
-
-  return (
-    <AddAuthenticationTokenDialogOpenProvider>
-      <AddSourceDialogOpenProvider>
-        <VisibleTabProvider>
-          <WordPressPluginsProvider>
-            <WordPressThemesProvider>
-              <div className={`ptup-ui ${classes.root}`}>
-                <AppBar />
-                <Tabs />
-                <SpeedDial />
-                <SnackBar />
-              </div>
-            </WordPressThemesProvider>
-          </WordPressPluginsProvider>
-        </VisibleTabProvider>
-      </AddSourceDialogOpenProvider>
-    </AddAuthenticationTokenDialogOpenProvider>
-  )
-}
+const App = () => (
+  <AddAuthenticationTokenDialogOpenProvider>
+    <AddSourceDialogOpenProvider>
+      <VisibleTabProvider>
+        <WordPressPluginsProvider>
+          <WordPressThemesProvider>
+            
+            <Div className='ptup-ui' sx={{
+              border: '1px solid #ddd',
+              minHeight: 200,
+              bgcolor: 'background.paper'
+            }}>
+              <AppBar />
+              <Tabs />
+              <SpeedDial />
+              <SnackBar />
+            </Div>
+          </WordPressThemesProvider>
+        </WordPressPluginsProvider>
+      </VisibleTabProvider>
+    </AddSourceDialogOpenProvider>
+  </AddAuthenticationTokenDialogOpenProvider>
+)
 
 export default App

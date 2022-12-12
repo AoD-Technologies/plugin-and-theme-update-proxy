@@ -1,6 +1,5 @@
 const {
   addBabelPreset,
-  addWebpackAlias,
   fixBabelImports,
   override
 } = require('customize-cra')
@@ -13,34 +12,23 @@ module.exports = override(
       runtime: 'automatic'
     }
   ]),
-  addWebpackAlias({
-    "react$": path.resolve(__dirname, 'node_modules/react')
-  }),
-  fixBabelImports('@material-ui/core', {
+  fixBabelImports('@mui/material', {
     libraryDirectory: 'esm',
     camel2DashComponentName: false
   }),
-  fixBabelImports('@material-ui/core/styles', {
+  fixBabelImports('@mui/material/styles', {
     libraryDirectory: '../esm/styles',
     camel2DashComponentName: false
   }),
-  fixBabelImports('@material-ui/icons', {
+  fixBabelImports('@mui/icons-material', {
     libraryDirectory: 'esm',
     camel2DashComponentName: false
   }),
-  fixBabelImports('@material-ui/lab', {
+  fixBabelImports('@mui/system', {
     libraryDirectory: 'esm',
     camel2DashComponentName: false
   }),
-  fixBabelImports('@material-ui/styles', {
-    libraryDirectory: 'esm',
-    camel2DashComponentName: false
-  }),
-  fixBabelImports('@material-ui/system', {
-    libraryDirectory: 'esm',
-    camel2DashComponentName: false
-  }),
-  fixBabelImports('@material-ui/utils', {
+  fixBabelImports('@mui/utils', {
     libraryDirectory: 'esm',
     camel2DashComponentName: false
   })
